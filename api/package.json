@@ -1,0 +1,7 @@
+{
+  "name": "fb-downloader-javascript",
+  "version": "1.0.0",
+  "dependencies": {
+    "fb-downloader-scrapper": "^3.0.1"
+  }
+}
