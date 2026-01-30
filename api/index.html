@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-100">
+        <h1 class="text-2xl font-black text-blue-700 mb-6 text-center">FB VIDEO GET</h1>
+        <input type="text" id="fbUrl" placeholder="Paste Facebook link here..." 
+               class="w-full p-4 bg-slate-100 rounded-xl mb-4 focus:ring-2 focus:ring-blue-500 outline-none">
+        <button onclick="getLinks()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 transition duration-300">SEARCH VIDEO</button>
+        
+        <div id="loading" class="hidden mt-4 text-center text-slate-400 animate-pulse">Processing...</div>
+        
+        <div id="results" class="hidden mt-6 space-y-3">
+            <div id="previewBox" class="rounded-lg overflow-hidden border bg-black"></div>
+            <a id="hdLink" href="#" class="block text-center bg-green-500 text-white py-3 rounded-lg font-bold">Download HD Quality</a>
+            <a id="sdLink" href="#" class="block text-center bg-blue-500 text-white py-3 rounded-lg font-bold">Download SD Quality</a>
+        </div>
+    </div>
+
+    <script>
+        async function getLinks() {
+            const url = document.getElementById('fbUrl').value;
+            if(!url) return alert("Please paste a link!");
+
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('results').classList.add('hidden');
+
+            try {
+                const response = await fetch('/api', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ url: url })
+                });
+                const data = await response.json();
+                
+                if(data.ok) {
+                    document.getElementById('hdLink').href = data.links.hd || data.links.sd;
+                    document.getElementById('sdLink').href = data.links.sd;
+                    document.getElementById('results').classList.remove('hidden');
+                } else {
+                    alert("Could not find video. Check if the link is public.");
+                }
+            } catch (err) {
+                alert("Error connecting to server.");
+            } finally {
+                document.getElementById('loading').classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
