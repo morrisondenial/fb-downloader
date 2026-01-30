@@ -1,4 +1,3 @@
-
 const { getFbVideoInfo } = require("fb-downloader-scrapper");
 
 export default async function handler(req, res) {
